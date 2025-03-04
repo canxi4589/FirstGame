@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float lastInputX = 1;
     private float lastInputY = 0; // Default to facing downward
-    public float dashSpeedMultiplier = 2f;
-    public float dashDuration = 0.1f;
+    public float dashSpeedMultiplier = 3f;
+    public float dashDuration = 0.2f;
     public float dashCooldown = 1f;
 
     private bool isDashing = false;
@@ -30,17 +30,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (isDashing)
-        {
-            if (Time.time >= dashEndTime) // Stop dashing when time is up
-            {
-                isDashing = false;
-                rb.velocity = Vector2.zero;
-            }
-            return;
-        }
-
-
         rb.velocity = moveInput * moveSpeed;
 
         // Flip sprite based on movement direction
@@ -52,8 +41,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (isDashing) return; // Prevent movement during dash
-
         moveInput = context.ReadValue<Vector2>();
 
         // Update animation parameters

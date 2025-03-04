@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private float lastInputX = 1;
     private float lastInputY = 0; // Default to facing downward
     public float dashSpeedMultiplier = 2f;
-    public float dashDuration = 0.1f;
+    public float dashDuration = 0.2f;
     public float dashCooldown = 1f;
 
     private bool isDashing = false;

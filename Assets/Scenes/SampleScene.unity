@@ -220,11 +220,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17a7de2201fe56b43be3f1768a7eef1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultWeapon: {fileID: 0}
-  newWeapon: {fileID: 0}
   projectilePrefab: {fileID: 7924279195616806038, guid: b9200afead7c0284386e2b565324bd9d, type: 3}
   firePoint: {fileID: 1117288162}
   projectileSpeed: 5
+  playerMovement: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,6 +476,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f707a6156934c48b24a934856bd75f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dashSpeedMultiplier: 3
+  dashDuration: 0.2
+  dashCooldown: 1
 --- !u!114 &1091845451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -566,6 +568,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 43c548ed-cfed-49d4-808e-f76347726ce3
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1091845450}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Dash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: fab26d0a-ebec-42f5-b2fb-324daeb491f7
+    m_ActionName: Player/Dash[/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

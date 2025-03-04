@@ -11,15 +11,16 @@ public class PlayerMovement : MonoBehaviour
 
     private float lastInputX = 1;
     private float lastInputY = 0; // Default to facing downward
-    public float dashSpeedMultiplier = 2f;
-    public float dashDuration = 0.1f;
+
+    // Dash variables
+    public float dashSpeedMultiplier = 3f;
+    public float dashDuration = 0.2f;
     public float dashCooldown = 1f;
 
     private bool isDashing = false;
     private float dashEndTime = 0f;
     private float lastDashTime = -Mathf.Infinity;
     private Vector2 dashDirection;
-
 
     void Start()
     {
@@ -39,7 +40,6 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-
 
         rb.velocity = moveInput * moveSpeed;
 
@@ -79,14 +79,6 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("LastInputY", lastInputY);
     }
 
-    public void UpdateAimingDirection(Vector2 aimDirection)
-    {
-        lastInputX = aimDirection.x;
-        lastInputY = aimDirection.y;
-
-        animator.SetFloat("LastInputX", lastInputX);
-        animator.SetFloat("LastInputY", lastInputY);
-    }
     public void Dash(InputAction.CallbackContext context)
     {
         if (context.started && !isDashing && Time.time >= lastDashTime + dashCooldown)

@@ -4,7 +4,7 @@ public class WeaponHolder : MonoBehaviour
 {
     public GameObject projectilePrefab; // Projectile prefab
     public Transform firePoint; // Where the projectile spawns
-    public float projectileSpeed = 10f;
+    public float projectileSpeed = 5f;
     public PlayerMovement playerMovement; // Reference to PlayerMovement script
 
     void Update()
