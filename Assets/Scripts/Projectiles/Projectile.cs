@@ -24,6 +24,16 @@ public class Projectile : MonoBehaviour
         if (hasHit) return; // Prevents multiple triggers
         hasHit = true;
         if (collision.CompareTag("PlayerProjectile")) return; // Ignore other bullets
+        // Ignore collisions with the player
+        if (collision.CompareTag("Player"))
+        {
+            return; // Exit the method without doing anything
+        }
+        if (collision.CompareTag("TileMap"))
+        {
+            return; // Exit the method without doing anything
+        }
+
 
         if (collision.CompareTag("Enemy"))
         {

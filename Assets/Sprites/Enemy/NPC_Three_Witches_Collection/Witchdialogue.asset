@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88ce966cb65ae5a43a1a19179ccd0b60, type: 3}
+  m_Name: Witchdialogue
+  m_EditorClassIdentifier: 
+  npcName: WitchNPC
+  npcPortrait: {fileID: 21300000, guid: 3e74389955ff08c479cd0189317d5b47, type: 3}
+  dialogueLines:
+  - Hello Potter !
+  - Bravest child i have ever seen
+  autoProgressLines: 0100
+  autoProgressDelay: 1.5
+  typeSpeed: 0.05
+  voiceSound: {fileID: 8300000, guid: 55c66c397a7a34f469fbc8a0c376cd91, type: 3}
+  voicePitch: 1
