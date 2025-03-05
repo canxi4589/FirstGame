@@ -16,7 +16,7 @@ public class WeaponHolder : MonoBehaviour
 
     void Update()
     {
-        RotateTowardsCursor();
+        FollowCursor();
 
         if (Input.GetKeyDown(KeyCode.Mouse0)) // Fire on left mouse click
         {
@@ -24,18 +24,19 @@ public class WeaponHolder : MonoBehaviour
         }
     }
 
-    void RotateTowardsCursor()
+    void FollowCursor()
     {
         if (firePoint == null) return;
 
         // Get mouse position in world coordinates
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f; // Ensure 2D space
+        mousePosition.z = 0f;
 
-        // Calculate the direction from the weapon to the cursor
+        // Make weapon holder follow the cursor
+        transform.position = mousePosition;
+
+        // Rotate weapon holder to look at cursor
         Vector2 direction = (mousePosition - transform.position).normalized;
-
-        // Rotate the weapon holder to face the cursor
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }

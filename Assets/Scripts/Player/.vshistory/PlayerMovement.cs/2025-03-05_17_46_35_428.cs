@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 aimDirection = (mousePosition - transform.position).normalized;
         UpdateAimingDirection(aimDirection);
-        //spriteRenderer.flipX = lastInputX < 0;
+        spriteRenderer.flipX = lastInputX < 0;
 
     }
 

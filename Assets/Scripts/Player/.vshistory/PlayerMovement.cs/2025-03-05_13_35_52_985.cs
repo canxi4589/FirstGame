@@ -3,52 +3,52 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float dashSpeedMultiplier = 2f;
-    [SerializeField] private float dashDuration = 0.1f;
-    [SerializeField] private float dashCooldown = 1f;
-
+    private float moveSpeed = 5f;
     private Rigidbody2D rb;
     private Vector2 moveInput;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private Camera mainCamera;
 
     private float lastInputX = 1;
-    private float lastInputY = 0;
+    private float lastInputY = 0; // Default to facing downward
+    public float dashSpeedMultiplier = 2f;
+    public float dashDuration = 0.1f;
+    public float dashCooldown = 1f;
+
     private bool isDashing = false;
     private float dashEndTime = 0f;
     private float lastDashTime = -Mathf.Infinity;
     private Vector2 dashDirection;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        mainCamera = Camera.main;
     }
 
     void Update()
     {
         if (isDashing)
         {
-            if (Time.time >= dashEndTime)
+            if (Time.time >= dashEndTime) // Stop dashing when time is up
             {
                 isDashing = false;
                 rb.velocity = Vector2.zero;
             }
             return;
         }
+
+
         rb.velocity = moveInput * moveSpeed;
 
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 aimDirection = (mousePosition - transform.position).normalized;
-        UpdateAimingDirection(aimDirection);
-        //spriteRenderer.flipX = lastInputX < 0;
-
+        // Flip sprite based on movement direction
+        if (moveInput.x < 0)
+            spriteRenderer.flipX = true;
+        else if (moveInput.x > 0)
+            spriteRenderer.flipX = false;
     }
-
 
     public void Move(InputAction.CallbackContext context)
     {
@@ -56,36 +56,37 @@ public class PlayerMovement : MonoBehaviour
 
         moveInput = context.ReadValue<Vector2>();
 
+        // Update animation parameters
         animator.SetFloat("InputX", moveInput.x);
         animator.SetFloat("InputY", moveInput.y);
 
-        // Walking Animation Logic
-        if (moveInput.sqrMagnitude > 0.01f)
+        if (moveInput.sqrMagnitude > 0.01f) // Player is moving
         {
             animator.SetBool("isWalking", true);
+
+            // Only update lastInputX and lastInputY if the movement is significant
+            lastInputX = moveInput.x;
+            lastInputY = moveInput.y;
         }
-        else
+        else 
         {
             animator.SetBool("isWalking", false);
         }
 
-        // Update LastInputX & LastInputY based on the cursor
+        // Ensure we keep the last direction by checking if movement stops
         animator.SetFloat("LastInputX", lastInputX);
         animator.SetFloat("LastInputY", lastInputY);
     }
 
+
     public void UpdateAimingDirection(Vector2 aimDirection)
     {
-        if (aimDirection.sqrMagnitude > 0.01f) // Ensure a valid direction
-        {
-            lastInputX = aimDirection.x;
-            lastInputY = aimDirection.y;
+        lastInputX = aimDirection.x;
+        lastInputY = aimDirection.y;
 
-            animator.SetFloat("LastInputX", lastInputX);
-            animator.SetFloat("LastInputY", lastInputY);
-        }
+        animator.SetFloat("LastInputX", lastInputX);
+        animator.SetFloat("LastInputY", lastInputY);
     }
-
     public void Dash(InputAction.CallbackContext context)
     {
         if (context.started && !isDashing && Time.time >= lastDashTime + dashCooldown)

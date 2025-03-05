@@ -40,15 +40,15 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
+
         rb.velocity = moveInput * moveSpeed;
 
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 aimDirection = (mousePosition - transform.position).normalized;
-        UpdateAimingDirection(aimDirection);
-        //spriteRenderer.flipX = lastInputX < 0;
+        // Update facing direction based on the cursor
+        UpdateAimingDirection();
 
+        // Flip sprite if cursor is to the left or right
+        spriteRenderer.flipX = lastInputX < 0;
     }
-
 
     public void Move(InputAction.CallbackContext context)
     {
