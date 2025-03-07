@@ -7,6 +7,7 @@ using UnityEngine;
 public class MapTransaction : MonoBehaviour
 {
     [SerializeField] PolygonCollider2D mapBoundary;
+    [SerializeField] BoxCollider2D waypoint;
     CinemachineConfiner Confiner;
     [SerializeField] Direction direction;
     [SerializeField] float additivePos =2f;
@@ -29,7 +30,7 @@ public class MapTransaction : MonoBehaviour
     private void UpdatePlayerPosition(GameObject player)
     {
         Vector3 newPos = player.transform.position;
-
+        newPos = waypoint.transform.position;
         switch (direction)
         {
             case Direction.Up:

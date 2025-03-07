@@ -17,7 +17,7 @@ MonoBehaviour:
   dialogueLines:
   - Hello Potter !
   - Bravest child i have ever seen
-  autoProgressLines: 0100
+  autoProgressLines: 0101
   autoProgressDelay: 1.5
   typeSpeed: 0.05
   voiceSound: {fileID: 8300000, guid: 55c66c397a7a34f469fbc8a0c376cd91, type: 3}
