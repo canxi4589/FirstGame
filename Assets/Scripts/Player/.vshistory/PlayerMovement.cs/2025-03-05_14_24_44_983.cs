@@ -40,13 +40,18 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
+        if(lastInputX < 0)
+        {
+            spriteRenderer.flipY = true;
+        }
         rb.velocity = moveInput * moveSpeed;
 
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 aimDirection = (mousePosition - transform.position).normalized;
         UpdateAimingDirection(aimDirection);
-        //spriteRenderer.flipX = lastInputX < 0;
 
+        // Flip sprite based on cursor direction
+        spriteRenderer.flipX = lastInputX < 0;
     }
 
 

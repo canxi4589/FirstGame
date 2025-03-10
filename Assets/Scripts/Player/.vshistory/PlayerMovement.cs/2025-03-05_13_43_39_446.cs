@@ -40,15 +40,15 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
+
         rb.velocity = moveInput * moveSpeed;
 
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 aimDirection = (mousePosition - transform.position).normalized;
-        UpdateAimingDirection(aimDirection);
-        //spriteRenderer.flipX = lastInputX < 0;
+        // Update facing direction based on the cursor
+        UpdateAimingDirection();
 
+        // Flip sprite if cursor is to the left or right
+        spriteRenderer.flipX = lastInputX < 0;
     }
-
 
     public void Move(InputAction.CallbackContext context)
     {
@@ -74,16 +74,16 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("LastInputY", lastInputY);
     }
 
-    public void UpdateAimingDirection(Vector2 aimDirection)
+    public void UpdateAimingDirection()
     {
-        if (aimDirection.sqrMagnitude > 0.01f) // Ensure a valid direction
-        {
-            lastInputX = aimDirection.x;
-            lastInputY = aimDirection.y;
+        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 aimDirection = (mousePosition - transform.position).normalized;
 
-            animator.SetFloat("LastInputX", lastInputX);
-            animator.SetFloat("LastInputY", lastInputY);
-        }
+        lastInputX = aimDirection.x;
+        lastInputY = aimDirection.y;
+
+        animator.SetFloat("LastInputX", lastInputX);
+        animator.SetFloat("LastInputY", lastInputY);
     }
 
     public void Dash(InputAction.CallbackContext context)
