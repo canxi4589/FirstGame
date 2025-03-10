@@ -90,12 +90,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.started && !isDashing && Time.time >= lastDashTime + dashCooldown)
         {
+
             isDashing = true;
             lastDashTime = Time.time;
             dashEndTime = Time.time + dashDuration;
 
-            dashDirection = new Vector2(lastInputX, lastInputY).normalized;
+            dashDirection = moveInput.normalized; // Use movement direction instead of cursor direction
             rb.velocity = dashDirection * moveSpeed * dashSpeedMultiplier;
         }
     }
+
 }

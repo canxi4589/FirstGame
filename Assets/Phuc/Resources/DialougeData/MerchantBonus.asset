@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e067866778c7d674684e5db79f8171b4, type: 3}
+  m_Name: MerchantBonus
+  m_EditorClassIdentifier: 
+  dialogues:
+  - speaker: Lilia
+    text: "Ta quay l\u1EA1i r\u1ED3i \u0111\xE2y, K\u1EBB Bu\xF4n B\xE1n"
+  - speaker: "K\u1EBB Bu\xF4n B\xE1n"
+    text: "V\u1EADy l\xE0 ng\xE0i \u0111\xE3 th\xE0nh c\xF4ng, t\xF4i th\u1EF1c s\u1EF1
+      r\u1EA5t x\xFAc \u0111\u1ED9ng. Kh\xF4ng u\u1ED5ng c\xF4ng t\xF4i lu\xF4n c\u1EA7u
+      nguy\u1EC7n cho ng\xE0i"
+  - speaker: Lilia
+    text: "Ta ch\u1EAFc ch\u1EAFn s\u1EBD th\u01B0\u1EDFng ng\u01B0\u01A1i h\u1EADu
+      h\u0129nh, mong r\u1EB1ng s\u1EBD \u0111\u01B0\u1EE3c h\u1EE3p t\xE1c sau n\xE0y."
+  - speaker: "K\u1EBB Bu\xF4n B\xE1n"
+    text: "Haha, nh\u01B0ng th\u01B0a ng\xE0i Lilia, t\xF4i ngh\u0129 r\u1EB1ng ng\xE0i
+      n\xEAn tr\u1EDF th\xE0nh 1 c\xF4ng ch\xFAa h\u01A1n l\xE0 1 k\u1EBB di\u1EC7t
+      qu\u1EF7 \u0111\xF3 haha"
+  - speaker: Lilia
+    text: "\xD4ng th\u1EF1c s\u1EF1 bi\u1EBFt \u0111\xF9a \u0111\xF3,... Th\u1EBF
+      \xF4ng c\xF3 mu\u1ED1n nghe c\xE2u chuy\u1EC7n v\u1EC1 cu\u1ED9c phi\xEAu l\u01B0u
+      kh\xF4ng?"
+  - speaker: "K\u1EBB Bu\xF4n B\xE1n"
+    text: "Haha! \u0110\xF3 s\u1EBD l\xE0 vinh h\u1EA1nh l\u1EDBn nh\u1EA5t c\u1EE7a
+      t\xF4i"
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "H\xE0nh tr\xECnh gian nan \u0111\xF3 s\u1EBD m\xE3i kh\xF4ng bao gi\u1EDD
+      phai \u0111i trong t\xE2m tr\xED c\xF4 c\xF4 c\xF4ng ch\xFAa. C\u1EA3m \u01A1n
+      \u0111\xE3 ch\u01A1i game c\u1EE7a ch\xFAng t\xF4i."

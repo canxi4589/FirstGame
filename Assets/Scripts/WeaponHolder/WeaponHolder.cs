@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class WeaponHolder : MonoBehaviour
 {
-    public GameObject projectilePrefab; // Projectile prefab
-    public Transform firePoint; // Where the projectile spawns
+    public BulletPool1 bulletPool;
+    public Transform firePoint;
     public float projectileSpeed = 10f;
-    public PlayerMovement playerMovement; // Reference to PlayerMovement script
 
     private Camera mainCamera;
 
@@ -28,49 +27,36 @@ public class WeaponHolder : MonoBehaviour
     {
         if (firePoint == null) return;
 
-        // Get mouse position in world coordinates
+        // Get mouse position in world space
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f; // Ensure 2D space
+        mousePosition.z = 0f; // Ensure it's 2D
 
-        // Calculate the direction from the weapon to the cursor
-        Vector2 direction = (mousePosition - transform.position).normalized;
+        // Calculate direction to mouse
+        Vector2 direction = (mousePosition - firePoint.position).normalized;
 
-        // Rotate the weapon holder to face the cursor
+        // Rotate firePoint to look at the cursor
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        firePoint.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     void Fire()
     {
-        if (firePoint == null || projectilePrefab == null)
+        if (firePoint == null || bulletPool == null)
         {
-            Debug.LogWarning("FirePoint or ProjectilePrefab is not assigned!");
+            Debug.LogWarning("FirePoint or BulletPool is not assigned!");
             return;
         }
 
-        // Get direction
-        Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f;
-        Vector2 direction = (mousePosition - firePoint.position).normalized;
+        GameObject bullet = bulletPool.GetBullet1();
+        bullet.transform.position = firePoint.position;
+        bullet.transform.rotation = firePoint.rotation;
 
-        // Update aiming direction in playerMovement
-        if (playerMovement != null)
-        {
-            playerMovement.UpdateAimingDirection(direction);
-        }
-
-        // Instantiate projectile
-        GameObject bullet = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-
-        // Rotate projectile to match fire direction
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
-
-        // Move bullet
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.velocity = direction * projectileSpeed;
+            rb.velocity = firePoint.right * projectileSpeed;
         }
+
+        bullet.GetComponent<Projectile>().SetPool(bulletPool);
     }
 }

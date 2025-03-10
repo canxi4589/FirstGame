@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e067866778c7d674684e5db79f8171b4, type: 3}
+  m_Name: Opening1
+  m_EditorClassIdentifier: 
+  dialogues:
+  - speaker: 'Narrator '
+    text: The screen fades from black. We see Harry, in prison clothes, sitting in
+      a dimly lit Azkaban cell, staring at the wall. A rat watches him, clearly disappointed
+  - speaker: Wizard Nguyen
+    text: "You know\u2026 I\u2019ve done a lot of dumb things in my life"
+  - speaker: Wizard Nguyen
+    text: 'Time-traveled without a license? '
+  - speaker: Wizard Nguyen
+    text: "But nothing\u2014and I mean nothing\u2014was dumber than ignoring wizarding
+      traffic laws"
+  - speaker: Wizard Nguyen
+    text: 'All because of a broom crash.Now i ended up in prison. '
+  - speaker: Wizard Nguyen
+    text: How unlucky.
+  - speaker: Wizard Nguyen
+    text: "And now, I gotta break out of here\u2026 before they make me take a mandatory
+      broom safety course"

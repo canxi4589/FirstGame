@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e067866778c7d674684e5db79f8171b4, type: 3}
+  m_Name: EndingDialouge
+  m_EditorClassIdentifier: 
+  dialogues:
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "Ma Z\u01B0\u01A1ng \u0111\xE3 b\u1ECB \u0111\xE1nh b\u1EA1i d\u01B0\u1EDBi
+      tay c\u1EE7a c\xF4ng ch\xFAa Lilia. "
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "B\u1EA7u tr\u1EDDi m\xE2y \u0111en bao ph\u1EE7 n\u01A1i L\xE2u \u0110\xE0i
+      T\xECnh \xC1i \u0111\xE3 b\u1ECB \u0111\u1EADp tan, \u0111\u1EC3 l\u1EA1i \u0111\xF3
+      l\xE0 \xE1nh n\u1EAFng chi\u1EBFu xu\u1ED1ng n\u01A1i v\xF9ng \u0111\u1EA5t
+      t\u01B0\u1EDFng ch\u1EEBng nh\u01B0 ch\xECm trong b\xF3ng t\u1ED1i v\u0129nh
+      h\u1EB1ng"
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "C\xF4ng ch\xFAa \u0111\xE3 t\xECm \u0111\u01B0\u1EE3c n\u01A1i m\xE0 Ma
+      Z\u01B0\u01A1ng 2k Zeros giam gi\u1EEF ch\xE0ng,... ph\xF2ng ng\u1EE7 c\u1EE7a
+      Ma Z\u01B0\u01A1ng \u01B0... Hmmm"
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "Quay l\u1EA1i ch\u1EE7 \u0111\u1EC1 ch\xEDnh, c\xF3 v\u1EBB nh\u01B0 ch\xE0ng
+      \u0111\xE3 b\u1ECB d\xEDnh l\u1EDDi nguy\u1EC1n tr\xF3i bu\u1ED9c v\xE0 kh\xF4ng
+      th\u1EC3 t\u1EC9nh l\u1EA1i."
+  - speaker: Lilia
+    text: "Ta ph\u1EA3i l\xE0m sao \u0111\xE2y... Ch\xE0ng \u01A1i... H\xE3y t\u1EC9nh
+      d\u1EADy \u0111i..."
+  - speaker: Lilia
+    text: "*Ch\u1EE5t*"
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "N\u1EE5 h\xF4n \u0111\xF3 \u0111\xE3 \u0111\xE1nh th\u1EE9c \u0111\u01B0\u1EE3c
+      ho\xE0ng t\u1EED, ch\xE0ng ng\u1ED3i d\u1EADy, \xF4m \u0111\u1EA7u m\u1ED9t
+      c\xE1ch kh\xF3 hi\u1EC3u"
+  - speaker: "Ho\xE0ng t\u1EED"
+    text: "\u0110\xE2y l\xE0 \u0111\xE2u... Lilia... Sao em l\u1EA1i \u1EDF \u0111\xE2y?...
+      \u0110\xFAng r\u1ED3i, ta \u0111ang ng\u1ED3i tr\xEAn ng\u1ECDn n\xFAi Ng\u1EE5i
+      N\xF3n m\xE0. SAO TA L\u1EA0I \u1EDE TRONG PH\xD2NG NG\u1EE6?"
+  - speaker: Lilia
+    text: "*Kh\xF3c n\u1EE9c n\u1EDF*"
+  - speaker: Lilia
+    text: "HO\xC0NG T\u1EEC!!!!"
+  - speaker: "Ho\xE0ng t\u1EED"
+    text: "Woah, c\xF3 chuy\u1EC7n g\xEC v\u1EADy...?"
+  - speaker: Lilia
+    text: "N\xE0ng... N\xE0ng nh\u1EDB ch\xE0ng l\u1EAFm!!"
+  - speaker: "Ho\xE0ng t\u1EED"
+    text: ...
+  - speaker: "Ho\xE0ng t\u1EED"
+    text: "M\u1EB7c d\xF9 ta kh\xF4ng hi\u1EC3u chuy\u1EC7n g\xEC \u0111ang x\u1EA3y
+      ra nh\u01B0ng ta c\u0169ng v\u1EADy. C\u1EA3m \u01A1n \u0111\xE3 \u0111\xE1nh
+      th\u1EE9c ta, Lilia."
+  - speaker: "Ng\u01B0\u1EDDi D\u1EABn Truy\u1EC7n"
+    text: "C\u1EA3 2 ng\u01B0\u1EDDi r\u1EDDi kh\u1ECFi L\xE2u \u0110\xE0i T\xECnh
+      \xC1I. Ho\xE0ng t\u1EED \u0111\xE3 c\u1EA7u h\xF4n th\xE0nh c\xF4ng Lilia v\xE0
+      ph\u1EA7n c\xF2n l\u1EA1i l\xE0 l\u1ECBch s\u1EED."

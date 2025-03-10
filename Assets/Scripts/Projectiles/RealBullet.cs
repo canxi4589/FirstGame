@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class RealBullet : MonoBehaviour
 {
-    public float lifetime = 1f;
+    public float lifetime = 2f;
 
 
     void Start()
