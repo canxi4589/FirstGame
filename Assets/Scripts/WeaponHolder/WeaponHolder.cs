@@ -16,6 +16,7 @@ public class WeaponHolder : MonoBehaviour
     void Update()
     {
         RotateTowardsCursor();
+        Debug.Log("Current Time.timeScale: " + Time.timeScale);
 
         if (Input.GetKeyDown(KeyCode.Mouse0)) // Fire on left mouse click
         {
@@ -27,14 +28,11 @@ public class WeaponHolder : MonoBehaviour
     {
         if (firePoint == null) return;
 
-        // Get mouse position in world space
         Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        mousePosition.z = 0f; // Ensure it's 2D
+        mousePosition.z = 0f; 
 
-        // Calculate direction to mouse
         Vector2 direction = (mousePosition - firePoint.position).normalized;
 
-        // Rotate firePoint to look at the cursor
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         firePoint.rotation = Quaternion.Euler(0, 0, angle);
     }
@@ -50,7 +48,10 @@ public class WeaponHolder : MonoBehaviour
         GameObject bullet = bulletPool.GetBullet1();
         bullet.transform.position = firePoint.position;
         bullet.transform.rotation = firePoint.rotation;
-
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayShootSound();
+        }
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {

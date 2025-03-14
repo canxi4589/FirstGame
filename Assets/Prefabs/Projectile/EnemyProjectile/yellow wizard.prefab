@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -131,6 +131,12 @@ MonoBehaviour:
   bulletPattern: 0
   bulletsAmount: 6
   angleSpread: 40
+  health: 5
+  coinPrefab: {fileID: 3692724398945533233, guid: 04e405b12eb77624995a3345ed4f4aa5, type: 3}
+  minCoins: 1
+  maxCoins: 3
+  coinDropRadius: 1
+  flashDuration: 0.2
 --- !u!114 &5874749482749487475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a50c7436e5c6e8489468028eea9b5f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletsAmount: 10
+  bulletsAmount: 3
   angleSpread: 40
   fireDistance: 10
 --- !u!50 &4658248974512638414
@@ -172,7 +178,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &7108885938457661902
 BoxCollider2D:
   m_ObjectHideFlags: 0

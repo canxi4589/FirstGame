@@ -4,28 +4,21 @@ public class Projectile : MonoBehaviour
 {
     public float lifetime = 5f;
     private Animator animator;
-    private bool hasHit = false; // Prevent multiple triggers
-    private Rigidbody2D rb;
-    private Collider2D col;
     private BulletPool1 bulletPool; // Reference to the pool
+    public float damage = 1f;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<Collider2D>();
     }
 
     void OnEnable()
     {
-        hasHit = false; // Reset hit state
-        col.enabled = true; // Enable collider
         if (animator != null)
         {
-            animator.Play("FireBullet"); // Start flying animation
+            animator.Play("FireBullet"); 
         }
 
-        // Automatically return to pool after `lifetime`
         Invoke(nameof(DisableProjectile), lifetime);
     }
     public void SetPool(BulletPool1 pool)
@@ -34,34 +27,34 @@ public class Projectile : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (hasHit) return;
-        hasHit = true;
 
-        // Ignore other bullets, player, and tilemap
-        if (collision.CompareTag("PlayerProjectile") || collision.CompareTag("Player") || collision.CompareTag("TileMap"))
-            return;
-
+        Debug.Log($"Bullet collided with: {collision.gameObject.name}, Tag: {collision.gameObject.tag}");
+        if (collision.CompareTag("Decor") || collision.CompareTag("TileMap"))
+        {
+            animator.SetTrigger("Explode");
+            DisableProjectile();
+        }
         if (collision.CompareTag("Enemy"))
         {
-            Destroy(collision.gameObject); // Destroy enemy (Can replace with damage logic)
+            Yellowwizard enemy = collision.GetComponent<Yellowwizard>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage((int)damage);
+                DisableProjectile();
+            }
         }
-
-        // Play impact animation
+        if (collision.CompareTag("PlayerProjectile") || collision.CompareTag("Player") || collision.CompareTag("Bound"))
+            return;
         if (animator != null)
         {
             animator.SetTrigger("Explode");
         }
-
-        // Stop movement and disable collider
-        rb.velocity = Vector2.zero;
-        col.enabled = false;
-
-        // Return to pool after animation
         Invoke(nameof(DisableProjectile), 1f);
     }
-
     void DisableProjectile()
     {
         gameObject.SetActive(false); // Instead of Destroying
     }
+
 }
+

@@ -8,11 +8,25 @@ public class Yellowwizard : MonoBehaviour
     public float fireRange = 4f;         // Distance to start shooting bullets
     public float attackRange = 1f;       // Distance to start melee attacking the player
     public float fireRate = 1f;          // Time between shots (in seconds)
-    public float attackRate = 1f;        // Time between melee attacks (in seconds)
+    public float attackRate = 0.7f;        // Time between melee attacks (in seconds)
     public BulletPattern bulletPattern = BulletPattern.Straight; // Default bullet pattern
 
     [SerializeField] private int bulletsAmount = 10;     // Number of bullets in spread (from FireBullet)
     [SerializeField] private float angleSpread = 30f;    // Spread angle for bullets (from FireBullet)
+
+    // Health and Death
+    [SerializeField] private int health = 5;             // Enemy health
+    private bool isDead = false;                         // Track if the enemy is dead
+
+    // Coin Drop
+    [SerializeField] private GameObject coinPrefab;      // Prefab for the coin to drop
+    [SerializeField] private int minCoins = 1;           // Minimum number of coins to drop
+    [SerializeField] private int maxCoins = 3;           // Maximum number of coins to drop
+    [SerializeField] private float coinDropRadius = 1f;  // Radius around the enemy to scatter coins
+
+    // Damage Indication
+    [SerializeField] private float flashDuration = 0.2f; // Duration of the red flash
+    private SpriteRenderer spriteRenderer;               // Reference to the SpriteRenderer for flashing
 
     private Animator animator;           // Reference to the Animator
     private Transform player;            // Reference to the player's transform
@@ -34,61 +48,67 @@ public class Yellowwizard : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        player = GameObject.FindGameObjectWithTag("Player").transform; // Find the player
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Get the SpriteRenderer
+        player = GameObject.FindGameObjectWithTag("Player")?.transform; // Find the player
 
+        if (player == null)
+        {
+            Debug.LogWarning("Player not found! Make sure the Player has the 'Player' tag.");
+        }
+
+        if (coinPrefab == null)
+        {
+            Debug.LogWarning("Coin Prefab not assigned in the Inspector for Yellowwizard!");
+        }
     }
 
     void Update()
     {
-        if (player != null)
+        if (isDead || player == null) return; // Stop all actions if dead or player is not found
+
+        // Calculate direction to player
+        Vector2 direction = (player.position - transform.position).normalized;
+        float horizontal = direction.x;
+        float vertical = direction.y;
+
+        // Check distance to player
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+
+        // Determine enemy behavior based on ranges
+        if (distanceToPlayer > chaseRange)
         {
-            // Calculate direction to player
-            Vector2 direction = (player.position - transform.position).normalized;
-            float horizontal = direction.x;
-            float vertical = direction.y;
-
-            // Check distance to player
-            float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-
-            // Determine enemy behavior based on ranges
-            if (distanceToPlayer > chaseRange)
-            {
-                // Player is too far—stay idle
-                isAttacking = false;
-                isShooting = false;
-                ResetTimers();
-            }
-            else if (distanceToPlayer > fireRange)
-            {
-                // Player is within chase range but outside fire range—chase the player
-                ChasePlayer(direction, distanceToPlayer);
-                isAttacking = false;
-                isShooting = false;
-            }
-            else if (distanceToPlayer > attackRange)
-            {
-                // Player is within fire range but outside attack range—shoot bullets
-                ChasePlayer(direction, distanceToPlayer);
-                isAttacking = false;
-                ShootBullet(direction, distanceToPlayer);
-            }
-            else
-            {
-                // Player is within attack range—melee attack
-                ChasePlayer(direction, distanceToPlayer);
-                MeleeAttack(direction, distanceToPlayer);
-            }
-
-            // Update animator parameters (ensure isAttacking is false when out of attack range)
-            animator.SetBool("IsMoving", distanceToPlayer <= chaseRange && distanceToPlayer > fireRange);
-            animator.SetFloat("Horizontal", horizontal);
-            animator.SetFloat("Vertical", vertical);
-            animator.SetBool("IsAttacking", isAttacking && distanceToPlayer <= attackRange); // Only attack if in range
-            animator.SetInteger("AttackDirection", attackDirection); // Set attack direction for AttackLeft/AttackRight
-
-            // Decrease timers
-            UpdateTimers();
+            // Player is too far—stay idle
+            isAttacking = false;
+            isShooting = false;
+            ResetTimers();
         }
+        else if (distanceToPlayer > fireRange)
+        {
+            // Player is within chase range but outside fire range—chase the player
+            ChasePlayer(direction, distanceToPlayer);
+            isAttacking = false;
+            isShooting = false;
+        }
+        else if (distanceToPlayer > attackRange)
+        {
+            ChasePlayer(direction, distanceToPlayer);
+            isAttacking = false;
+            ShootBullet(direction, distanceToPlayer);
+        }
+        else
+        {
+            ChasePlayer(direction, distanceToPlayer);
+            MeleeAttack(direction, distanceToPlayer);
+        }
+
+        animator.SetBool("IsMoving", distanceToPlayer <= chaseRange && distanceToPlayer > fireRange);
+        animator.SetFloat("Horizontal", horizontal);
+        animator.SetFloat("Vertical", vertical);
+        animator.SetBool("IsAttacking", isAttacking && distanceToPlayer <= attackRange); 
+        animator.SetInteger("AttackDirection", attackDirection); // Set attack direction for AttackLeft/AttackRight
+
+        // Decrease timers
+        UpdateTimers();
     }
 
     private void ChasePlayer(Vector2 direction, float distance)
@@ -103,6 +123,10 @@ public class Yellowwizard : MonoBehaviour
     {
         if (shootTimer <= 0 && !isAttacking)
         {
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayShootSound();
+            }
             switch (bulletPattern)
             {
                 case BulletPattern.Straight:
@@ -228,18 +252,96 @@ public class Yellowwizard : MonoBehaviour
         }
     }
 
+    // Method to take damage
+    public void TakeDamage(int damage)
+    {
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayEnemyHitSound();
+        }
+        if (isDead) return; 
+
+        health -= damage;
+        if (health <= 0)
+        {
+            
+            Die();
+        }
+        else
+        {
+            animator.SetTrigger("Hit");
+            StartCoroutine(FlashRed());
+        }
+    }
+
+    private System.Collections.IEnumerator FlashRed()
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(flashDuration);
+        spriteRenderer.color = Color.white;
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        isAttacking = false;
+        isShooting = false;
+
+        // Play death animation
+        animator.SetTrigger("Die");
+
+        // Update GameManager kills
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddKill();
+        }
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayEnemyDeathSound();
+        }
+        // Drop coins
+        DropCoins();
+        Destroy(gameObject);
+        // Disable the enemy after a delay to allow the death animation to play
+        //StartCoroutine(DestroyAfterAnimation());
+    }
+
+    private void DropCoins()
+    {
+        if (coinPrefab == null) return;
+
+        // Randomly determine the number of coins to drop
+        int coinsToDrop = Random.Range(minCoins, maxCoins + 1);
+        for (int i = 0; i < coinsToDrop; i++)
+        {
+            // Generate a random position within the drop radius
+            Vector2 randomOffset = Random.insideUnitCircle * coinDropRadius;
+            Vector3 coinPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0);
+
+            // Instantiate the coin
+            Instantiate(coinPrefab, coinPosition, Quaternion.identity);
+        }
+    }
+
+    private System.Collections.IEnumerator DestroyAfterAnimation()
+    {
+        // Wait for the death animation to finish
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+        Destroy(gameObject); // Destroy the enemy
+    }
+
     // Optional: Add a method to handle damage during attacks (triggered via Animation Events)
-    //void DealDamage()
-    //{
-    //    if (player != null)
-    //    {
-    //        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-    //        if (playerHealth != null)
-    //        {
-    //            playerHealth.TakeDamage(10); // Adjust damage value as needed
-    //        }
-    //    }
-    //}
+    void DealDamage()
+    {
+        if (player != null)
+        {
+            PlayerMovement playerMovement = player.GetComponent<PlayerMovement>();
+            if (playerMovement != null)
+            {
+                playerMovement.TakeDamage(1); // Deal 1 damage to the player (adjust as needed)
+            }
+        }
+    }
 
     // Optional: Method to sync animation duration with cooldown (called via Animation Event if needed)
     void EndAttack()
