@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(time / 60);
         int seconds = Mathf.FloorToInt(time % 60);
-        Debug.Log(seconds);
         return $"{minutes:00}:{seconds:00}";
     }
     public int GetMoney() => money;

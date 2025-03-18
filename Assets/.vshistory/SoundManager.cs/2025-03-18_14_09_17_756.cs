@@ -33,17 +33,17 @@ public class SoundManager : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float footstepVolume = 0.6f;
 
-    //void Start()
-    //{
-    //    // ... existing code ...
-    //    if (SoundManager.Instance == null)
-    //    {
-    //        Debug.Log("Creating new SoundManager instance");
-    //        GameObject soundManagerObj = new GameObject("SoundManager");
-    //        soundManagerObj.AddComponent<SoundManager>();
-    //    }
-    //    // ... rest of Start ...
-    //}
+    void Start()
+    {
+        // ... existing code ...
+        if (SoundManager.Instance == null)
+        {
+            Debug.Log("Creating new SoundManager instance");
+            GameObject soundManagerObj = new GameObject("SoundManager");
+            soundManagerObj.AddComponent<SoundManager>();
+        }
+        // ... rest of Start ...
+    }
 
 
     void Awake()
@@ -80,6 +80,7 @@ public class SoundManager : MonoBehaviour
         source.Play();
         StartCoroutine(StopSourceAfterDelay(source, clip.length));
 
+        // Optional: Stop the source after the clip finishes
         if (!source.loop)
         {
             StartCoroutine(StopSourceAfterDelay(source, clip.length));

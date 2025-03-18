@@ -22,8 +22,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip fallSound;
     [SerializeField] private AudioClip hurtSound;
     [SerializeField] private AudioClip deathSound;
-    [SerializeField] private AudioClip spikeTrapArmedSound; // New sound for spike trap arming
-    [SerializeField] private AudioClip spikeTrapShootSound; // New sound for spike trap shooting
+    [SerializeField] private AudioClip spikeTrapSound; // New sound for spike trap activation
 
     [Header("Volume Settings")]
     [Range(0f, 1f)]
@@ -33,25 +32,10 @@ public class SoundManager : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float footstepVolume = 0.6f;
 
-    //void Start()
-    //{
-    //    // ... existing code ...
-    //    if (SoundManager.Instance == null)
-    //    {
-    //        Debug.Log("Creating new SoundManager instance");
-    //        GameObject soundManagerObj = new GameObject("SoundManager");
-    //        soundManagerObj.AddComponent<SoundManager>();
-    //    }
-    //    // ... rest of Start ...
-    //}
-
-
     void Awake()
     {
-        Debug.Log("Awake");
         if (Instance != null && Instance != this)
         {
-            Debug.Log("Null");
             Destroy(gameObject);
             return;
         }
@@ -71,14 +55,12 @@ public class SoundManager : MonoBehaviour
     {
         if (clip == null) return;
 
-        // Cycle through available effect sources
         AudioSource source = effectSources[currentSourceIndex];
         currentSourceIndex = (currentSourceIndex + 1) % effectSources.Length;
 
         source.clip = clip;
-        source.volume = (volume >= 0f) ? volume : effectsVolume; // Use provided volume or default effects volume
+        source.volume = (volume >= 0f) ? volume : effectsVolume;
         source.Play();
-        StartCoroutine(StopSourceAfterDelay(source, clip.length));
 
         if (!source.loop)
         {
@@ -97,8 +79,7 @@ public class SoundManager : MonoBehaviour
     public void PlayFallSound() => PlaySound(fallSound);
     public void PlayHurtSound() => PlaySound(hurtSound);
     public void PlayDeathSound() => PlaySound(deathSound);
-    public void PlaySpikeTrapArmedSound() => PlaySound(spikeTrapArmedSound); // New method for armed sound
-    public void PlaySpikeTrapShootSound() => PlaySound(spikeTrapShootSound); // New method for shoot sound
+    public void PlaySpikeTrapSound() => PlaySound(spikeTrapSound); // New method for spike trap sound
 
     public void SetMusicVolume(float volume)
     {

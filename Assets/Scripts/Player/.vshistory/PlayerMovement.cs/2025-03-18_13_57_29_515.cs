@@ -357,26 +357,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void QuickRestart()
-    {
-        Time.timeScale = 1f; // Restore time
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.ResetStats(); // Reset stats for a new run
-        }
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload current scene
-    }
-
-    private void ReturnToBreach()
-    {
-        Time.timeScale = 1f; // Restore time
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.ResetStats(); // Reset stats for a new run
-        }
-        SceneManager.LoadScene("Breach"); // Load hub scene (create this scene)
-    }
-
     public void UseAmmo(int amount)
     {
         ammo -= amount;

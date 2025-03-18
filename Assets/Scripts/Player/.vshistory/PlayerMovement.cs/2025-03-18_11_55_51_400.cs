@@ -24,11 +24,11 @@ public class PlayerMovement : MonoBehaviour
     private float lastInputY = 0;
     private bool isDashing = false;
     private float dashEndTime = 0f;
-    private float dashIFrameEndTime = 0f; 
+    private float dashIFrameEndTime = 0f; // When i-frames end during dash
     private float lastDashTime = -Mathf.Infinity;
     private Vector2 dashDirection;
-    private Vector3 lastSafePosition; 
-    [SerializeField] private float fallDuration = 0.4f;
+    private Vector3 lastSafePosition; // Store the last safe position
+    [SerializeField] private float fallDuration = 0.4f; // Duration of the fall animation
     private bool isFalling = false;
 
     // UI Variables
@@ -44,10 +44,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;  // Game over/victory panel
 
     // Game over/victory UI elements
-    [SerializeField] private TextMeshProUGUI titleText;    
-    [SerializeField] private TextMeshProUGUI timeText;     
-    [SerializeField] private TextMeshProUGUI moneyText;    
-    [SerializeField] private TextMeshProUGUI killsText;    
+    [SerializeField] private TextMeshProUGUI titleText;    // "YOU DIED" or "YOU WIN"
+    [SerializeField] private TextMeshProUGUI timeText;     // Time value
+    [SerializeField] private TextMeshProUGUI moneyText;    // Money value
+    [SerializeField] private TextMeshProUGUI killsText;    // Kills value
     [SerializeField] private Button quickRestartButton;
     [SerializeField] private Button returnToBreachButton;
     [SerializeField] private AudioClip defaultTransitionSound; // Assign in Inspector
@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
     private Image[] heartImages;
     private Text ammoText;
     private TextMeshProUGUI coinText;
-    private TextMeshProUGUI keyText;
+    private Text keyText;
 
     // Invincibility Variables
     [SerializeField] private float invincibilityDuration = 1.5f;
@@ -71,13 +71,14 @@ public class PlayerMovement : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         mainCamera = Camera.main;
         currentHealth = maxHealth; // Initialize health
-        var playerInput = GetComponent<PlayerInput>();
+
         // Initialize UI references from containers
         heartImages = heartContainer.GetComponentsInChildren<Image>();
+        ammoText = coinContainer.transform.Find("AmmoText")?.GetComponent<Text>();
         coinText = coinContainer.transform.Find("CoinText")?.GetComponent<TextMeshProUGUI>();
-        keyText = keyContainer.transform.Find("KeyText")?.GetComponent<TextMeshProUGUI>();
+        keyText = keyContainer.transform.Find("KeyText")?.GetComponent<Text>();
 
-        if (heartImages == null || heartImages.Length == 0 || coinText == null || keyText == null)
+        if (heartImages == null || heartImages.Length == 0 || ammoText == null || coinText == null || keyText == null)
         {
             Debug.LogError("UI components not found! Check container names and hierarchy.");
         }

@@ -24,11 +24,11 @@ public class PlayerMovement : MonoBehaviour
     private float lastInputY = 0;
     private bool isDashing = false;
     private float dashEndTime = 0f;
-    private float dashIFrameEndTime = 0f; 
+    private float dashIFrameEndTime = 0f; // When i-frames end during dash
     private float lastDashTime = -Mathf.Infinity;
     private Vector2 dashDirection;
-    private Vector3 lastSafePosition; 
-    [SerializeField] private float fallDuration = 0.4f;
+    private Vector3 lastSafePosition; // Store the last safe position
+    [SerializeField] private float fallDuration = 1.0f; // Duration of the fall animation
     private bool isFalling = false;
 
     // UI Variables
@@ -44,20 +44,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private GameObject gameOverPanel;  // Game over/victory panel
 
     // Game over/victory UI elements
-    [SerializeField] private TextMeshProUGUI titleText;    
-    [SerializeField] private TextMeshProUGUI timeText;     
-    [SerializeField] private TextMeshProUGUI moneyText;    
-    [SerializeField] private TextMeshProUGUI killsText;    
+    [SerializeField] private TextMeshProUGUI titleText;    // "YOU DIED" or "YOU WIN"
+    [SerializeField] private TextMeshProUGUI timeText;     // Time value
+    [SerializeField] private TextMeshProUGUI moneyText;    // Money value
+    [SerializeField] private TextMeshProUGUI killsText;    // Kills value
     [SerializeField] private Button quickRestartButton;
     [SerializeField] private Button returnToBreachButton;
     [SerializeField] private AudioClip defaultTransitionSound; // Assign in Inspector
-    [SerializeField] private AudioClip fallSound; // Assign fall sound in Inspector
-    [SerializeField] private AudioClip hurtSound; // Assign hurt sound in Inspector
 
     private Image[] heartImages;
     private Text ammoText;
     private TextMeshProUGUI coinText;
-    private TextMeshProUGUI keyText;
+    private Text keyText;
 
     // Invincibility Variables
     [SerializeField] private float invincibilityDuration = 1.5f;
@@ -71,13 +69,14 @@ public class PlayerMovement : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         mainCamera = Camera.main;
         currentHealth = maxHealth; // Initialize health
-        var playerInput = GetComponent<PlayerInput>();
+
         // Initialize UI references from containers
         heartImages = heartContainer.GetComponentsInChildren<Image>();
+        ammoText = coinContainer.transform.Find("AmmoText")?.GetComponent<Text>();
         coinText = coinContainer.transform.Find("CoinText")?.GetComponent<TextMeshProUGUI>();
-        keyText = keyContainer.transform.Find("KeyText")?.GetComponent<TextMeshProUGUI>();
+        keyText = keyContainer.transform.Find("KeyText")?.GetComponent<Text>();
 
-        if (heartImages == null || heartImages.Length == 0 || coinText == null || keyText == null)
+        if (heartImages == null || heartImages.Length == 0 || ammoText == null || coinText == null || keyText == null)
         {
             Debug.LogError("UI components not found! Check container names and hierarchy.");
         }
@@ -107,8 +106,6 @@ public class PlayerMovement : MonoBehaviour
         {
             returnToBreachButton.onClick.AddListener(ReturnToBreach);
         }
-        lastSafePosition = transform.position;
-
     }
 
     void Update()
@@ -153,10 +150,6 @@ public class PlayerMovement : MonoBehaviour
                 isInvincible = false;
                 spriteRenderer.enabled = true; // Ensure visible when invincibility ends
             }
-        }
-        if (!isFalling && !isDashing && moveInput.sqrMagnitude > 0.01f)
-        {
-            lastSafePosition = transform.position;
         }
 
 
@@ -220,7 +213,6 @@ public class PlayerMovement : MonoBehaviour
     void EndDash()
     {
         isDashing = false;
-        // Ensure velocity is zero if no input, otherwise use current move input
         rb.velocity = moveInput.sqrMagnitude > 0 ? moveInput * moveSpeed : Vector2.zero;
     }
 
@@ -268,6 +260,7 @@ public class PlayerMovement : MonoBehaviour
     // Public Methods to Modify Values
     public void TakeDamage(int damage)
     {
+        // Check if player is invincible (from hit or dash i-frames)
         bool isDashInvincible = isDashing && Time.time <= dashIFrameEndTime;
         if (!isInvincible && !isDashInvincible)
         {
@@ -279,14 +272,9 @@ public class PlayerMovement : MonoBehaviour
             isInvincible = true;
             invincibilityTime = Time.time + invincibilityDuration;
 
-            if (SoundManager.Instance != null)
-            {
-                SoundManager.Instance.PlayHurtSound();
-            }
-
             if (currentHealth == 0)
             {
-                StartCoroutine(EndGameSequence(false));
+                StartCoroutine(EndGameSequence(false)); // Trigger game over sequence
             }
         }
     }
@@ -443,6 +431,7 @@ public class PlayerMovement : MonoBehaviour
         transform.position = position;
         Debug.Log("Teleported to " + position);
 
+        // Update the camera position to follow the player
         if (mainCamera != null)
         {
             Vector3 cameraPosition = new Vector3(position.x, position.y, mainCamera.transform.position.z);
@@ -452,38 +441,6 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             Debug.LogWarning("Main camera is not assigned!");
-        }
-    }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Hole") && !isDashing)
-        {
-            StartCoroutine(FallIntoHole());
-        }
-    }
-
-    private System.Collections.IEnumerator FallIntoHole()
-    {
-        if (isFalling) yield break;
-
-        isFalling = true;
-        rb.velocity = Vector2.zero; // Immediately stop movement when falling starts
-        animator.SetTrigger("Fall");
-
-        if (SoundManager.Instance != null)
-        {
-            SoundManager.Instance.PlayFallSound();
-        }
-
-        yield return new WaitForSeconds(fallDuration);
-
-        TakeDamage(1);
-
-        if (currentHealth > 0)
-        {
-            TeleportToPosition(lastSafePosition);
-            isFalling = false;
-            animator.ResetTrigger("Fall");
         }
     }
 

@@ -78,8 +78,8 @@ public class SoundManager : MonoBehaviour
         source.clip = clip;
         source.volume = (volume >= 0f) ? volume : effectsVolume; // Use provided volume or default effects volume
         source.Play();
-        StartCoroutine(StopSourceAfterDelay(source, clip.length));
 
+        // Optional: Stop the source after the clip finishes
         if (!source.loop)
         {
             StartCoroutine(StopSourceAfterDelay(source, clip.length));

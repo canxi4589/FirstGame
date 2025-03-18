@@ -48,22 +48,37 @@ public class SoundManager : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("Awake");
+        Debug.Log("SoundManager Awake called on GameObject: " + gameObject.name);
         if (Instance != null && Instance != this)
         {
-            Debug.Log("Null");
+            Debug.Log("SoundManager: Destroying duplicate instance on " + gameObject.name + ", Existing Instance: " + Instance.gameObject.name);
             Destroy(gameObject);
             return;
         }
+        Debug.Log("SoundManager: Setting Instance to " + gameObject.name);
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        Debug.Log("SoundManager: DontDestroyOnLoad applied to " + gameObject.name);
+
+        // Ensure all effect sources have loop disabled
+        foreach (var source in effectSources)
+        {
+            source.loop = false;
+            Debug.Log($"Initialized AudioSource {System.Array.IndexOf(effectSources, source)} with loop = false");
+        }
 
         if (musicSource != null && backgroundMusic != null)
         {
+            Debug.Log("SoundManager: Initializing music source with clip: " + backgroundMusic.name);
             musicSource.clip = backgroundMusic;
             musicSource.volume = musicVolume;
             musicSource.loop = true;
             musicSource.Play();
+            Debug.Log("SoundManager: Music started playing");
+        }
+        else
+        {
+            Debug.LogWarning("SoundManager: musicSource or backgroundMusic is null. MusicSource: " + (musicSource != null) + ", BackgroundMusic: " + (backgroundMusic != null));
         }
     }
 
@@ -78,8 +93,8 @@ public class SoundManager : MonoBehaviour
         source.clip = clip;
         source.volume = (volume >= 0f) ? volume : effectsVolume; // Use provided volume or default effects volume
         source.Play();
-        StartCoroutine(StopSourceAfterDelay(source, clip.length));
 
+        // Optional: Stop the source after the clip finishes
         if (!source.loop)
         {
             StartCoroutine(StopSourceAfterDelay(source, clip.length));

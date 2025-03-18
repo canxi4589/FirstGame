@@ -72,6 +72,13 @@ public class PlayerMovement : MonoBehaviour
         mainCamera = Camera.main;
         currentHealth = maxHealth; // Initialize health
         var playerInput = GetComponent<PlayerInput>();
+        if (playerInput != null)
+        {
+            playerInput.enabled = false;
+            playerInput.enabled = true;
+            Debug.Log("PlayerInput reinitialized");
+        }
+
         // Initialize UI references from containers
         heartImages = heartContainer.GetComponentsInChildren<Image>();
         coinText = coinContainer.transform.Find("CoinText")?.GetComponent<TextMeshProUGUI>();
