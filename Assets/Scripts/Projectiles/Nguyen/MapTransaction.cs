@@ -7,10 +7,10 @@ using UnityEngine;
 public class MapTransaction : MonoBehaviour
 {
     [SerializeField] PolygonCollider2D mapBoundary;
+    [SerializeField] BoxCollider2D waypoint;
     CinemachineConfiner Confiner;
     [SerializeField] Direction direction;
-    [SerializeField] private AudioClip transitionSound;
-    [SerializeField] float additivePos =2f;
+    [SerializeField] float additivePos = 2f;
 
     enum Direction { Up, Down, Left, Right }
 
@@ -23,14 +23,14 @@ public class MapTransaction : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Confiner.m_BoundingShape2D =mapBoundary;
+            Confiner.m_BoundingShape2D = mapBoundary;
             UpdatePlayerPosition(collision.gameObject);
         }
     }
     private void UpdatePlayerPosition(GameObject player)
     {
         Vector3 newPos = player.transform.position;
-
+        newPos = waypoint.transform.position;
         switch (direction)
         {
             case Direction.Up:

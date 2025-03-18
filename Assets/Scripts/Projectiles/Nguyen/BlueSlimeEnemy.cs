@@ -17,12 +17,23 @@ public class BlueSlimeEnemy : MonoBehaviour
     private void Awake()
     {
         enemyPathfinding = GetComponent<EnemyPathfinding>();
+        if (enemyPathfinding == null)
+        {
+            Debug.LogError("EnemyPathfinding component not found on " + gameObject.name);
+        }
         state = State.Roaming;
     }
 
     private void Start()
     {
-        StartCoroutine(RoamingRoutine());
+        if (enemyPathfinding != null)
+        {
+            StartCoroutine(RoamingRoutine());
+        }
+        else
+        {
+            Debug.LogError("Cannot start RoamingRoutine because enemyPathfinding is null.");
+        }
     }
 
     private IEnumerator RoamingRoutine()
@@ -30,7 +41,7 @@ public class BlueSlimeEnemy : MonoBehaviour
         while (state == State.Roaming)
         {
             Vector2 roamPosition = GetRoamingPosition();
-            enemyPathfinding.MoveTo(roamPosition);
+            enemyPathfinding.MoveTo(roamPosition); // Line 33 - error occurs here if enemyPathfinding is null
             yield return new WaitForSeconds(roamChangeDirFloat);
         }
     }
@@ -39,16 +50,16 @@ public class BlueSlimeEnemy : MonoBehaviour
     {
         return new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player")) 
+        if (collision.CompareTag("Player"))
         {
             return;
         }
-        if(collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy"))
         {
             return;
         }
-     
     }
 }

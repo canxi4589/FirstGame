@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
     private Image[] heartImages;
     private Text ammoText;
     private TextMeshProUGUI coinText;
-    private Text keyText;
+    private TextMeshProUGUI keyText;
 
     // Invincibility Variables
     [SerializeField] private float invincibilityDuration = 1.5f;
@@ -69,11 +69,23 @@ public class PlayerMovement : MonoBehaviour
 
         // Initialize UI references from containers
         heartImages = heartContainer.GetComponentsInChildren<Image>();
-        ammoText = coinContainer.transform.Find("AmmoText")?.GetComponent<Text>();
+        if (heartImages == null )
+        {
+            Debug.LogError("Heart components not found! Check container names and hierarchy.");
+        }
+        //ammoText = coinContainer.transform.Find("AmmoText")?.GetComponent<Text>();
         coinText = coinContainer.transform.Find("CoinText")?.GetComponent<TextMeshProUGUI>();
-        keyText = keyContainer.transform.Find("KeyText")?.GetComponent<Text>();
+        if (coinText == null)
+        {
+            Debug.LogError("Coin components not found! Check container names and hierarchy.");
+        }
+        keyText = keyContainer.transform.Find("KeyText")?.GetComponent<TextMeshProUGUI>();
+        if (keyText == null)
+        {
+            Debug.LogError("Key components not found! Check container names and hierarchy.");
+        }
 
-        if (heartImages == null || heartImages.Length == 0 || ammoText == null || coinText == null || keyText == null)
+        if (heartImages == null || heartImages.Length == 0 || coinText == null || keyText == null)
         {
             Debug.LogError("UI components not found! Check container names and hierarchy.");
         }

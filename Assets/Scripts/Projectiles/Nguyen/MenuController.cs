@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class MenuController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Tab))
         {
+            Console.WriteLine("Entered Tab");
             if (!menuCanvas.activeSelf && PauseController.IsGamePaused)
             {
                 return;
