@@ -37,9 +37,15 @@ public class Projectile : MonoBehaviour
         if (collision.CompareTag("Enemy"))
         {
             Yellowwizard enemy = collision.GetComponent<Yellowwizard>();
+            BlueSlimeEnemy enemy1 = collision.GetComponent<BlueSlimeEnemy>();
             if (enemy != null)
             {
                 enemy.TakeDamage((int)damage);
+                DisableProjectile();
+            }
+            if (enemy1 != null)
+            {
+                enemy1.TakeDamage((int)damage);
                 DisableProjectile();
             }
         }
