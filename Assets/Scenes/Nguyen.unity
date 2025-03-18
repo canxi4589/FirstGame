@@ -9563,6 +9563,25 @@ MonoBehaviour:
   dashSpeedMultiplier: 2
   dashDuration: 0.1
   dashCooldown: 1
+  dashIFrameDuration: 0.08
+  footstepInterval: 0.4
+  maxHealth: 5
+  ammo: 57
+  coins: 1
+  keys: 0
+  heartContainer: {fileID: 0}
+  coinContainer: {fileID: 0}
+  keyContainer: {fileID: 0}
+  fadePanel: {fileID: 0}
+  gameOverPanel: {fileID: 0}
+  titleText: {fileID: 0}
+  timeText: {fileID: 0}
+  moneyText: {fileID: 0}
+  killsText: {fileID: 0}
+  quickRestartButton: {fileID: 0}
+  returnToBreachButton: {fileID: 0}
+  defaultTransitionSound: {fileID: 0}
+  invincibilityDuration: 1.5
 --- !u!114 &1689204951
 MonoBehaviour:
   m_ObjectHideFlags: 0

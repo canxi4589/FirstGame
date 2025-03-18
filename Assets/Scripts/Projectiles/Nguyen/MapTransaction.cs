@@ -9,6 +9,7 @@ public class MapTransaction : MonoBehaviour
     [SerializeField] PolygonCollider2D mapBoundary;
     CinemachineConfiner Confiner;
     [SerializeField] Direction direction;
+    [SerializeField] private AudioClip transitionSound;
     [SerializeField] float additivePos =2f;
 
     enum Direction { Up, Down, Left, Right }
