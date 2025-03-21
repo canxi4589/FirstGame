@@ -11,6 +11,9 @@ TagManager:
   - Decor
   - EnemyProjectile
   - 'Transition '
+  - Hole
+  - 'DoorLock '
+  - wutt
   layers:
   - Default
   - TransparentFX
