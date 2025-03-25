@@ -16,6 +16,7 @@ public class WeaponHolder : MonoBehaviour
     void Update()
     {
         RotateTowardsCursor();
+        Debug.Log("Current Time.timeScale: " + Time.timeScale);
 
         if (Input.GetKeyDown(KeyCode.Mouse0)) // Fire on left mouse click
         {

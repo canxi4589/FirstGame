@@ -345,6 +345,7 @@ public class DialogManager : MonoBehaviour
             dialogText.text += c;
             if (SoundManager.Instance != null && typingSound != null)
             {
+                SoundManager.Instance.PlaySound(typingSound, 0.5f);
             }
             yield return new WaitForSecondsRealtime(typingSpeed);
         }

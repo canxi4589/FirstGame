@@ -17,26 +17,27 @@ public class DialogManager : MonoBehaviour
     [SerializeField] private float defaultDisplayDuration = 3f;
     [SerializeField] private float typingSpeed = 0.05f;
     [SerializeField] private AudioClip typingSound;
-    [SerializeField] private AudioSource audioSource; // For TTS playback
 
-    [SerializeField] private string openAIKey = ""; // Set in Inspector
+    // API-related fields
+    [SerializeField] private string openAIKey = "YOUR_OPENAI_API_KEY"; // Replace with your API key
     private const string whisperEndpoint = "https://api.openai.com/v1/audio/transcriptions";
     private const string chatEndpoint = "https://api.openai.com/v1/chat/completions";
-    private const string ttsEndpoint = "https://api.openai.com/v1/audio/speech";
     private AudioClip recordedClip;
     private bool isRecording = false;
     private string transcriptionResult;
     private string chatResponseResult;
 
+    // Daily limit tracking
     private const float MAX_DAILY_COST = 2.00f;
-    private const float COST_PER_CHAT = 0.015f; // Adjusted for TTS (~$0.015/1k chars)
-    private const int MAX_CHATS_PER_DAY = (int)(MAX_DAILY_COST / COST_PER_CHAT);
+    private const float COST_PER_CHAT = 0.0006f;
+    private const int MAX_CHATS_PER_DAY = (int)(MAX_DAILY_COST / COST_PER_CHAT); // 3,333 chats
     private int chatsToday = 0;
     private DateTime lastResetDate = DateTime.MinValue;
 
     private Coroutine currentDialogCoroutine;
     private Coroutine currentBounceCoroutine;
     private Vector3 startImagePos;
+    private float previousTimeScale;
 
     [System.Serializable]
     public struct DialogLine
@@ -77,12 +78,6 @@ public class DialogManager : MonoBehaviour
     // New method for voice chat with Harry Pooper
     public void StartVoiceChatWithHarryPooper(Sprite harrySprite = null)
     {
-        if (string.IsNullOrEmpty(openAIKey))
-        {
-            Debug.LogError("OpenAI API Key is empty! Please set it in the Inspector.");
-            return;
-        }
-
         if (chatsToday >= MAX_CHATS_PER_DAY)
         {
             if (currentDialogCoroutine != null) StopCoroutine(currentDialogCoroutine);
@@ -94,10 +89,9 @@ public class DialogManager : MonoBehaviour
         currentDialogCoroutine = StartCoroutine(VoiceChatCoroutine(harrySprite));
     }
 
-
     private IEnumerator DisplayLimitReachedMessage(Sprite characterSprite)
     {
-        dialogText.text = "Oi, thatâ€™s enough chatter for today! Ministryâ€™s cuttinâ€™ me budget.";
+        dialogText.text = "Oi, that’s enough chatter for today! Ministry’s cuttin’ me budget.";
         dialogPanel.SetActive(true);
         if (characterSprite != null)
         {
@@ -109,11 +103,12 @@ public class DialogManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(defaultDisplayDuration);
         EndDialog();
     }
+
     private IEnumerator VoiceChatCoroutine(Sprite characterSprite)
     {
         isRecording = true;
         recordedClip = Microphone.Start(null, false, 10, 44100);
-        dialogText.text = "Oi, speak up, mate! Prisonâ€™s noisy.";
+        dialogText.text = "Oi, speak up, mate! Prison’s noisy.";
         dialogPanel.SetActive(true);
         if (characterSprite != null)
         {
@@ -130,6 +125,8 @@ public class DialogManager : MonoBehaviour
         string filePath = Path.Combine(Application.persistentDataPath, "recording.wav");
         if (SavWav.Save(filePath, recordedClip))
         {
+            // Store the result of TranscribeAudio
+            transcriptionResult = null;
             yield return StartCoroutine(TranscribeAudio(filePath));
             string transcribedText = transcriptionResult;
 
@@ -143,36 +140,26 @@ public class DialogManager : MonoBehaviour
 
             LogAPIUsage("Whisper", "Transcription", transcribedText);
 
+            // Store the result of GetChatResponse
+            chatResponseResult = null;
             yield return StartCoroutine(GetChatResponse(transcribedText));
             string response = chatResponseResult;
 
             if (!string.IsNullOrEmpty(response))
             {
                 LogAPIUsage("OpenAI Chat", "Response", response);
-
-                // Generate and play speech
-                AudioClip speechClip = null;
-                yield return StartCoroutine(GenerateSpeech(response, clip => speechClip = clip));
-                if (speechClip != null)
-                {
-                    audioSource.PlayOneShot(speechClip);
-                    yield return StartCoroutine(DisplayDialogWithTyping(response, characterSprite, speechClip.length));
-                }
-                else
-                {
-                    yield return StartCoroutine(DisplayDialogWithTyping(response, characterSprite, defaultDisplayDuration));
-                }
+                yield return StartCoroutine(DisplayDialogWithTyping(response, characterSprite, defaultDisplayDuration));
                 chatsToday++;
             }
             else
             {
-                dialogText.text = "Blimey, the magicâ€™s gone wonky again.";
+                dialogText.text = "Blimey, the magic’s gone wonky again.";
                 yield return new WaitForSecondsRealtime(defaultDisplayDuration);
             }
         }
         else
         {
-            dialogText.text = "Canâ€™t even record a spell right in here.";
+            dialogText.text = "Can’t even record a spell right in here.";
             yield return new WaitForSecondsRealtime(defaultDisplayDuration);
         }
 
@@ -192,7 +179,6 @@ public class DialogManager : MonoBehaviour
 
     private IEnumerator TranscribeAudio(string filePath)
     {
-        Debug.Log($"TranscribeAudio - API Key: '{openAIKey}'");
         byte[] audioData = File.ReadAllBytes(filePath);
         WWWForm form = new WWWForm();
         form.AddBinaryData("file", audioData, "recording.wav", "audio/wav");
@@ -207,22 +193,20 @@ public class DialogManager : MonoBehaviour
             {
                 string jsonResponse = www.downloadHandler.text;
                 var json = JsonUtility.FromJson<WhisperResponse>(jsonResponse);
-                transcriptionResult = json.text;
+                yield return json.text;
             }
             else
             {
-                Debug.LogError($"Whisper API Error: {www.error} - Response Code: {www.responseCode}");
-                transcriptionResult = null;
+                Debug.LogError($"Whisper API Error: {www.error}");
+                yield return null;
             }
         }
     }
 
-
     private IEnumerator GetChatResponse(string inputText)
     {
-        Debug.Log($"GetChatResponse - API Key: '{openAIKey}'");
         string systemPrompt = "You are Harry Pooper, a wizard imprisoned for illegal broom racing. " +
-                              "Youâ€™re a bit cheeky, sarcastic, and bitter about being locked up. " +
+                              "You’re a bit cheeky, sarcastic, and bitter about being locked up. " +
                               "You miss flying and often reference brooms, magic, or prison life in your responses. " +
                               "Keep your tone casual and a bit grumpy, with a hint of wizardly flair. " +
                               "Respond in English.";
@@ -237,7 +221,7 @@ public class DialogManager : MonoBehaviour
             }
         });
 
-        using (UnityWebRequest www = UnityWebRequest.PostWwwForm(chatEndpoint, "POST"))
+        using (UnityWebRequest www = UnityWebRequest.Post(chatEndpoint, "POST"))
         {
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
             www.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -251,45 +235,12 @@ public class DialogManager : MonoBehaviour
             {
                 string jsonResponse = www.downloadHandler.text;
                 var response = JsonUtility.FromJson<ChatResponse>(jsonResponse);
-                chatResponseResult = response.choices[0].message.content;
+                yield return response.choices[0].message.content;
             }
             else
             {
-                Debug.LogError($"Chat API Error: {www.error} - Response Code: {www.responseCode}");
-                chatResponseResult = null;
-            }
-        }
-    }
-
-    private IEnumerator GenerateSpeech(string text, Action<AudioClip> onComplete)
-    {
-        Debug.Log($"GenerateSpeech - API Key: '{openAIKey}'");
-        string jsonBody = JsonUtility.ToJson(new TTSRequest
-        {
-            model = "tts-1",
-            input = text,
-            voice = "onyx" // Grumpy voice
-        });
-
-        using (UnityWebRequest www = UnityWebRequest.PostWwwForm(ttsEndpoint, "POST"))
-        {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonBody);
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            www.downloadHandler = new DownloadHandlerAudioClip(ttsEndpoint, AudioType.MPEG);
-            www.SetRequestHeader("Content-Type", "application/json");
-            www.SetRequestHeader("Authorization", $"Bearer {openAIKey}");
-
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                AudioClip clip = ((DownloadHandlerAudioClip)www.downloadHandler).audioClip;
-                onComplete(clip);
-            }
-            else
-            {
-                Debug.LogError($"TTS API Error: {www.error} - Response Code: {www.responseCode}");
-                onComplete(null);
+                Debug.LogError($"OpenAI Chat API Error: {www.error}");
+                yield return null;
             }
         }
     }
@@ -345,6 +296,7 @@ public class DialogManager : MonoBehaviour
             dialogText.text += c;
             if (SoundManager.Instance != null && typingSound != null)
             {
+                SoundManager.Instance.PlaySound(typingSound, 0.5f);
             }
             yield return new WaitForSecondsRealtime(typingSpeed);
         }
@@ -493,12 +445,35 @@ public class DialogManager : MonoBehaviour
         return dialogPanel != null && dialogPanel.activeInHierarchy;
     }
 
-    [System.Serializable] private class WhisperResponse { public string text; }
-    [System.Serializable] private class ChatRequest { public string model; public List<ChatMessage> messages; }
-    [System.Serializable] private class ChatMessage { public string role; public string content; }
-    [System.Serializable] private class ChatResponse { public List<Choice> choices; }
-    [System.Serializable] private class Choice { public ChatMessage message; }
-    [System.Serializable] private class TTSRequest { public string model; public string input; public string voice; }
+    [System.Serializable]
+    private class WhisperResponse
+    {
+        public string text;
+    }
 
+    [System.Serializable]
+    private class ChatRequest
+    {
+        public string model;
+        public List<ChatMessage> messages;
+    }
 
+    [System.Serializable]
+    private class ChatMessage
+    {
+        public string role;
+        public string content;
+    }
+
+    [System.Serializable]
+    private class ChatResponse
+    {
+        public List<Choice> choices;
+    }
+
+    [System.Serializable]
+    private class Choice
+    {
+        public ChatMessage message;
+    }
 }

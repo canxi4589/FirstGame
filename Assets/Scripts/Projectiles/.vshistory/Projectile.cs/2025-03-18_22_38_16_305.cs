@@ -28,6 +28,7 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
+        Debug.Log($"Bullet collided with: {collision.gameObject.name}, Tag: {collision.gameObject.tag}");
         if (collision.CompareTag("Decor") || collision.CompareTag("TileMap"))
         {
             animator.SetTrigger("Explode");
